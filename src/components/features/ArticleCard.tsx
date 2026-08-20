@@ -14,7 +14,7 @@ export const ArticleCard = memo(({ article }: ArticleCardProps) => {
       <Link
         to={`/article/${encodeURIComponent(article.id)}`}
         state={{ article }}
-        className="block overflow-hidden"
+        className="block overflow-hidden bg-gray-100 dark:bg-gray-700"
         aria-label={`Read article: ${article.title}`}
       >
         {article.imageUrl ? (

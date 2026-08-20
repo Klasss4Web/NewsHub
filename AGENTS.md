@@ -84,7 +84,9 @@ cleanly with existing platform APIs.
 - **Minimal dependencies:** only React, Vite, Tailwind, and testing tools.
 - **Custom utilities and reusable components** instead of UI libraries.
 - **SOLID principles:** Adapter/Repository patterns, dependency inversion, single responsibility.
-- **Performance:** ## Performance Validation
+- **Performance:**
+
+## Performance Validation
 
 Performance considerations were reviewed using browser DevTools and
 build output.

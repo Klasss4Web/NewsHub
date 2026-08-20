@@ -1,4 +1,5 @@
-import { API_ENDPOINTS, API_KEYS, useMockData } from '@/services/apiConfigService'
+import { API_ENDPOINTS, API_KEYS } from '@/services/apiConfigService'
+import { getUseMockData } from '@/services/dataModeService'
 import { fetchMockArticles } from '@/services/mockDataService'
 import { fetchWithTimeout } from '@/utils'
 import type { ArticleFilter, PaginationOptions } from '@/types'
@@ -25,7 +26,7 @@ export const fetchNewsApiArticles = async (
   filter: ArticleFilter,
   pagination: PaginationOptions
 ): Promise<NewsApiResponse> => {
-  if (useMockData() || !API_KEYS.newsapi) {
+  if (getUseMockData() || !API_KEYS.newsapi) {
     const result = await fetchMockArticles(filter, pagination.page, pagination.pageSize, 'newsapi')
     return {
       status: 'ok',

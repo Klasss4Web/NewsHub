@@ -59,11 +59,13 @@ export const ArticleDetailPage = () => {
   return (
     <article className="animate-slide-up mx-auto max-w-3xl overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow duration-300 hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
       {article.imageUrl && (
-        <img
-          src={article.imageUrl}
-          alt=""
-          className="h-64 w-full object-cover sm:h-80"
-        />
+        <div className="bg-gray-100 dark:bg-gray-700">
+          <img
+            src={article.imageUrl}
+            alt=""
+            className="h-64 w-full object-cover sm:h-80"
+          />
+        </div>
       )}
 
       <div className="p-6 sm:p-10">

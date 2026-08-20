@@ -1,4 +1,5 @@
-import { API_ENDPOINTS, API_KEYS, useMockData } from '@/services/apiConfigService'
+import { API_ENDPOINTS, API_KEYS } from '@/services/apiConfigService'
+import { getUseMockData } from '@/services/dataModeService'
 import { fetchMockArticles } from '@/services/mockDataService'
 import { fetchWithTimeout } from '@/utils'
 import type { ArticleFilter, PaginationOptions } from '@/types'
@@ -33,7 +34,7 @@ export const fetchGuardianArticles = async (
   filter: ArticleFilter,
   pagination: PaginationOptions
 ): Promise<GuardianResponse> => {
-  if (useMockData() || !API_KEYS.guardian) {
+  if (getUseMockData() || !API_KEYS.guardian) {
     const result = await fetchMockArticles(filter, pagination.page, pagination.pageSize, 'guardian')
     return {
       response: {
