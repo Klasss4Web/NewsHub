@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Input, Select, Checkbox, Button } from '@/components/common'
 import { NEWS_SOURCES, NEWS_CATEGORIES } from '@/constants'
+import { capitalize } from '@/utils'
 import type { ArticleFilter } from '@/types'
 
 interface FilterPanelProps {
@@ -13,7 +14,7 @@ export const FilterPanel = ({ filter, onChange }: FilterPanelProps) => {
 
   const categoryOptions = NEWS_CATEGORIES.map((category) => ({
     value: category,
-    label: category.charAt(0).toUpperCase() + category.slice(1),
+    label: capitalize(category),
   }))
 
   const updateFilter = <K extends keyof ArticleFilter>(

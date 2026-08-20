@@ -20,7 +20,7 @@ export const ArticleCard = memo(({ article }: ArticleCardProps) => {
         {article.imageUrl ? (
           <img
             src={article.imageUrl}
-            alt=""
+            alt={article.title}
             loading="lazy"
             className="h-44 w-full object-cover transition-all duration-300 group-hover:scale-110 group-hover:brightness-110"
           />

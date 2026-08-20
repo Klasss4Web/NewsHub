@@ -62,7 +62,7 @@ export const ArticleDetailPage = () => {
         <div className="bg-gray-100 dark:bg-gray-700">
           <img
             src={article.imageUrl}
-            alt=""
+            alt={article.title}
             className="h-64 w-full object-cover sm:h-80"
           />
         </div>

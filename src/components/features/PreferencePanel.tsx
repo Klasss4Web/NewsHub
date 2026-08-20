@@ -1,6 +1,7 @@
 import { Button, Checkbox } from '@/components/common'
 import { usePreferences } from '@/stores/preferenceStore'
 import { NEWS_CATEGORIES, NEWS_SOURCES } from '@/constants'
+import { capitalize } from '@/utils'
 
 export const PreferencePanel = () => {
   const {
@@ -40,7 +41,7 @@ export const PreferencePanel = () => {
           {NEWS_CATEGORIES.map((category) => (
             <Checkbox
               key={category}
-              label={category.charAt(0).toUpperCase() + category.slice(1)}
+              label={capitalize(category)}
               checked={preferredCategories.includes(category)}
               onChange={() => toggleCategory(category)}
             />
