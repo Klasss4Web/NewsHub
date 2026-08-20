@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-gray-50 text-gray-900;
+  }
+
+  /* Focus visible for keyboard navigation */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+  }
+}
+
+@layer utilities {
+  .animate-pulse-slow {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Stagger children animations */
+  .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+  .stagger-children > *:nth-child(2) { animation-delay: 50ms; }
+  .stagger-children > *:nth-child(3) { animation-delay: 100ms; }
+  .stagger-children > *:nth-child(4) { animation-delay: 150ms; }
+  .stagger-children > *:nth-child(5) { animation-delay: 200ms; }
+  .stagger-children > *:nth-child(6) { animation-delay: 250ms; }
+  .stagger-children > *:nth-child(7) { animation-delay: 300ms; }
+  .stagger-children > *:nth-child(8) { animation-delay: 350ms; }
+  .stagger-children > *:nth-child(9) { animation-delay: 400ms; }
+  .stagger-children > *:nth-child(10) { animation-delay: 450ms; }
+  .stagger-children > *:nth-child(11) { animation-delay: 500ms; }
+  .stagger-children > *:nth-child(12) { animation-delay: 550ms; }
+}
+
+/* ── Theme transition ──────────────────────────────────────────────
+   Replicates the eclinic circular-reveal effect:
+   1. View Transitions API — when supported, the whole-page snapshot
+      cross-fades through a circular clip-path reveal that expands
+      outward from the toggle button. The origin is set via the
+      --theme-transition-x / --theme-transition-y custom properties
+      on <html> by themeStore.
+   2. CSS fallback — when the View Transitions API is unavailable
+      (Firefox, older Safari) every color token animates smoothly
+      via a transition on the html element. The .theme-transitioning
+      class is added for the duration so the transition only runs
+      during a theme change, not on first paint.
+   ──────────────────────────────────────────────────────────────── */
+
+/* The `[data-theme-vt]` attribute is set on <html> only during a theme
+   change so these animations don't conflict with other transitions. */
+:root[data-theme-vt]::view-transition-old(root) {
+  animation: theme-reveal-old 400ms ease-in-out forwards;
+}
+
+:root[data-theme-vt]::view-transition-new(root) {
+  animation: theme-reveal-new 400ms ease-in-out forwards;
+}
+
+@keyframes theme-reveal-old {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes theme-reveal-new {
+  from {
+    /* Start as a tiny circle centred on the toggle, then grow to fill. */
+    clip-path: circle(0% at var(--theme-transition-x, 50%) var(--theme-transition-y, 50%));
+  }
+  to {
+    clip-path: circle(100% at var(--theme-transition-x, 50%) var(--theme-transition-y, 50%));
+  }
+}
+
+/* Fallback: animate color tokens directly when View Transitions aren't used. */
+html.theme-transitioning,
+html.theme-transitioning * {
+  transition:
+    background-color 350ms ease,
+    border-color 350ms ease,
+    color 350ms ease,
+    fill 350ms ease,
+    stroke 350ms ease,
+    box-shadow 350ms ease,
+    outline-color 350ms ease;
+}
+
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
