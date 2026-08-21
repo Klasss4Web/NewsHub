@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import { Badge } from '@/components/common'
 import { usePreferences } from '@/stores/preferenceStore'
@@ -9,7 +8,7 @@ interface ArticleCardProps {
   article: Article
 }
 
-export const ArticleCard = memo(({ article }: ArticleCardProps) => {
+export const ArticleCard = ({ article }: ArticleCardProps) => {
   const { toggleAuthor, isPreferredAuthor } = usePreferences()
   const isPreferred = isPreferredAuthor(article.author)
 
@@ -122,6 +121,4 @@ export const ArticleCard = memo(({ article }: ArticleCardProps) => {
       </div>
     </article>
   )
-})
-
-ArticleCard.displayName = 'ArticleCard'
+}
