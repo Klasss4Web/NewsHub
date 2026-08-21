@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Badge } from '@/components/common'
+import { Badge, Tooltip } from '@/components/common'
 import { useRelatedArticles } from '@/hooks'
 import { formatDate, truncate } from '@/utils'
 import type { Article } from '@/types'
@@ -90,9 +90,11 @@ export const RelatedArticles = ({
                     {relatedArticle.title}
                   </h3>
                   {relatedArticle.description && (
-                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
-                      {truncate(relatedArticle.description, 100)}
-                    </p>
+                    <Tooltip content={relatedArticle.description}>
+                      <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+                        {truncate(relatedArticle.description, 100)}
+                      </p>
+                    </Tooltip>
                   )}
                 </div>
                 <div className="mt-3 flex items-end justify-between gap-3">

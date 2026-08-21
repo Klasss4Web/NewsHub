@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Badge } from '@/components/common'
+import { Badge, Tooltip } from '@/components/common'
 import { usePreferences } from '@/stores/preferenceStore'
 import { formatDate, truncate } from '@/utils'
 import type { Article } from '@/types'
@@ -72,9 +72,11 @@ export const ArticleCard = ({ article }: ArticleCardProps) => {
         </h2>
 
         {article.description && (
-          <p className="mb-4 flex-1 text-sm text-gray-600 dark:text-gray-300">
-            {truncate(article.description, 140)}
-          </p>
+          <Tooltip content={article.description}>
+            <p className="mb-4 flex-1 text-sm text-gray-600 dark:text-gray-300">
+              {truncate(article.description, 140)}
+            </p>
+          </Tooltip>
         )}
 
         <div className="mt-auto flex flex-wrap items-center justify-between gap-2 text-xs text-gray-500 dark:text-gray-400">
