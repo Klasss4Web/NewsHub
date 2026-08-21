@@ -98,7 +98,7 @@ export const ArticleDetailPage = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Read Original Article
+              Read Full Story
             </a>
           </Button>
           <Button variant="secondary" onClick={() => navigate(-1)}>

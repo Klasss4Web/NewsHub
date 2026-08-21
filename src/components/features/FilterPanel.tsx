@@ -89,7 +89,7 @@ export const FilterPanel = ({ filter, onChange }: FilterPanelProps) => {
           <span className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Sources
           </span>
-          <div className="flex flex-wrap gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {NEWS_SOURCES.map((source) => (
               <Checkbox
                 key={source.id}
