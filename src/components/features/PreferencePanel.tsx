@@ -52,9 +52,8 @@ export const PreferencePanel = () => {
       <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Preferred Authors</h2>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Your preferred authors will be detected automatically as you read. This
-          list updates when you mark authors as preferred from article cards
-          (feature placeholder).
+          Click the star icon next to an author on any article card to add or
+          remove them from your preferred authors.
         </p>
         {preferredAuthors.length === 0 ? (
           <p className="mt-4 text-sm text-gray-400 dark:text-gray-500">No preferred authors yet.</p>
