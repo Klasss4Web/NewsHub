@@ -1,9 +1,5 @@
 import { useEffect, useState } from 'react'
-import {
-  NewsApiAdapter,
-  GuardianAdapter,
-  NyTimesAdapter,
-} from '@/api/adapters'
+import { NewsApiAdapter, GuardianAdapter, NyTimesAdapter } from '@/api/adapters'
 import { NewsRepository } from '@/api/repositories/NewsRepository'
 import type { Article } from '@/types'
 

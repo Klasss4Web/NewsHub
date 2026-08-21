@@ -54,7 +54,12 @@ export const fetchNyTimesArticles = async (
   pagination: PaginationOptions
 ): Promise<NyTimesResponse> => {
   if (getUseMockData() || !API_KEYS.nytimes) {
-    const result = await fetchMockArticles(filter, pagination.page, pagination.pageSize, 'nytimes')
+    const result = await fetchMockArticles(
+      filter,
+      pagination.page,
+      pagination.pageSize,
+      'nytimes'
+    )
     return {
       status: 'OK',
       response: {
@@ -88,7 +93,8 @@ export const fetchNyTimesArticles = async (
     sort: 'newest',
   })
 
-  if (filter.fromDate) params.set('begin_date', filter.fromDate.replace(/-/g, ''))
+  if (filter.fromDate)
+    params.set('begin_date', filter.fromDate.replace(/-/g, ''))
   if (filter.toDate) params.set('end_date', filter.toDate.replace(/-/g, ''))
   if (filter.category) {
     params.set('fq', `news_desk:("${filter.category}")`)

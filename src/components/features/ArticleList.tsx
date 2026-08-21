@@ -59,7 +59,7 @@ export const ArticleList = ({
         title={emptyState?.title || 'No articles found'}
         description={
           emptyState?.description ||
-          'Try adjusting your search or filters to find what you\'re looking for.'
+          "Try adjusting your search or filters to find what you're looking for."
         }
       />
     )

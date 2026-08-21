@@ -27,7 +27,12 @@ export const fetchNewsApiArticles = async (
   pagination: PaginationOptions
 ): Promise<NewsApiResponse> => {
   if (getUseMockData() || !API_KEYS.newsapi) {
-    const result = await fetchMockArticles(filter, pagination.page, pagination.pageSize, 'newsapi')
+    const result = await fetchMockArticles(
+      filter,
+      pagination.page,
+      pagination.pageSize,
+      'newsapi'
+    )
     return {
       status: 'ok',
       totalResults: result.totalResults,

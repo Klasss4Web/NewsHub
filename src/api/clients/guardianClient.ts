@@ -35,7 +35,12 @@ export const fetchGuardianArticles = async (
   pagination: PaginationOptions
 ): Promise<GuardianResponse> => {
   if (getUseMockData() || !API_KEYS.guardian) {
-    const result = await fetchMockArticles(filter, pagination.page, pagination.pageSize, 'guardian')
+    const result = await fetchMockArticles(
+      filter,
+      pagination.page,
+      pagination.pageSize,
+      'guardian'
+    )
     return {
       response: {
         status: 'ok',

@@ -150,14 +150,14 @@ src/
 
 ## Available Scripts
 
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start the Vite development server |
-| `npm run build` | Build the production bundle |
-| `npm run preview` | Preview the production build locally |
-| `npm test` | Run all tests once |
-| `npm run test:watch` | Run tests in watch mode |
-| `npm run lint` | Run ESLint |
+| Script               | Description                          |
+| -------------------- | ------------------------------------ |
+| `npm run dev`        | Start the Vite development server    |
+| `npm run build`      | Build the production bundle          |
+| `npm run preview`    | Preview the production build locally |
+| `npm test`           | Run all tests once                   |
+| `npm run test:watch` | Run tests in watch mode              |
+| `npm run lint`       | Run ESLint                           |
 
 ## License
 

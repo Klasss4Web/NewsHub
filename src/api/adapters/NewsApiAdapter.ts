@@ -1,6 +1,11 @@
 import { fetchNewsApiArticles } from '@/api/clients/newsApiClient'
 import type { IArticleAdapter } from '@/api/adapters/IArticleAdapter'
-import type { AdapterResult, Article, ArticleFilter, PaginationOptions } from '@/types'
+import type {
+  AdapterResult,
+  Article,
+  ArticleFilter,
+  PaginationOptions,
+} from '@/types'
 
 export class NewsApiAdapter implements IArticleAdapter {
   readonly sourceId = 'newsapi'

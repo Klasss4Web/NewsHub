@@ -7,7 +7,9 @@ interface ToggleProps {
 export const Toggle = ({ checked, onChange, label }: ToggleProps) => {
   return (
     <label className="flex items-center justify-between cursor-pointer select-none">
-      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</span>
+      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        {label}
+      </span>
       <button
         type="button"
         role="switch"

@@ -5,12 +5,18 @@ import { useInfiniteScroll } from '@/hooks/useInfiniteScroll'
 const observers: IntersectionObserverMock[] = []
 
 class IntersectionObserverMock {
-  callback: (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => void
+  callback: (
+    entries: IntersectionObserverEntry[],
+    observer: IntersectionObserver
+  ) => void
   options?: IntersectionObserverInit
   targets = new Set<Element>()
 
   constructor(
-    callback: (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => void,
+    callback: (
+      entries: IntersectionObserverEntry[],
+      observer: IntersectionObserver
+    ) => void,
     options?: IntersectionObserverInit
   ) {
     this.callback = callback
@@ -52,7 +58,8 @@ class IntersectionObserverMock {
 describe('useInfiniteScroll', () => {
   beforeEach(() => {
     observers.length = 0
-    window.IntersectionObserver = IntersectionObserverMock as unknown as typeof IntersectionObserver
+    window.IntersectionObserver =
+      IntersectionObserverMock as unknown as typeof IntersectionObserver
   })
 
   afterEach(() => {
@@ -67,7 +74,11 @@ describe('useInfiniteScroll', () => {
     showSentinel?: boolean
   }
 
-  const SentinelComponent = ({ onLoadMore, hasMore, isLoading }: TestComponentProps) => {
+  const SentinelComponent = ({
+    onLoadMore,
+    hasMore,
+    isLoading,
+  }: TestComponentProps) => {
     const sentinelRef = useInfiniteScroll<HTMLDivElement>({
       onLoadMore,
       hasMore,
@@ -76,29 +87,57 @@ describe('useInfiniteScroll', () => {
     return <div data-testid="sentinel" ref={sentinelRef} />
   }
 
-  const ToggleSentinelComponent = ({ onLoadMore, hasMore, isLoading, showSentinel }: TestComponentProps) => {
+  const ToggleSentinelComponent = ({
+    onLoadMore,
+    hasMore,
+    isLoading,
+    showSentinel,
+  }: TestComponentProps) => {
     const sentinelRef = useInfiniteScroll<HTMLDivElement>({
       onLoadMore,
       hasMore,
       isLoading,
     })
-    return showSentinel ? <div data-testid="sentinel" ref={sentinelRef} /> : <div />
+    return showSentinel ? (
+      <div data-testid="sentinel" ref={sentinelRef} />
+    ) : (
+      <div />
+    )
   }
 
   it('does not attach an observer when no sentinel element is rendered', () => {
-    render(<ToggleSentinelComponent onLoadMore={vi.fn()} hasMore isLoading={false} showSentinel={false} />)
+    render(
+      <ToggleSentinelComponent
+        onLoadMore={vi.fn()}
+        hasMore
+        isLoading={false}
+        showSentinel={false}
+      />
+    )
 
     expect(observers.length).toBe(0)
   })
 
   it('attaches an observer once the sentinel element is mounted', () => {
     const { rerender } = render(
-      <ToggleSentinelComponent onLoadMore={vi.fn()} hasMore isLoading={false} showSentinel={false} />
+      <ToggleSentinelComponent
+        onLoadMore={vi.fn()}
+        hasMore
+        isLoading={false}
+        showSentinel={false}
+      />
     )
 
     expect(observers.length).toBe(0)
 
-    rerender(<ToggleSentinelComponent onLoadMore={vi.fn()} hasMore isLoading={false} showSentinel />)
+    rerender(
+      <ToggleSentinelComponent
+        onLoadMore={vi.fn()}
+        hasMore
+        isLoading={false}
+        showSentinel
+      />
+    )
 
     expect(observers.length).toBe(1)
     expect(observers[0].options?.rootMargin).toBe('200px')
@@ -106,7 +145,9 @@ describe('useInfiniteScroll', () => {
 
   it('calls onLoadMore when the sentinel enters the viewport', () => {
     const onLoadMore = vi.fn()
-    render(<SentinelComponent onLoadMore={onLoadMore} hasMore isLoading={false} />)
+    render(
+      <SentinelComponent onLoadMore={onLoadMore} hasMore isLoading={false} />
+    )
 
     expect(observers.length).toBe(1)
 
@@ -130,14 +171,22 @@ describe('useInfiniteScroll', () => {
 
   it('does not call onLoadMore when there are no more pages', () => {
     const onLoadMore = vi.fn()
-    render(<SentinelComponent onLoadMore={onLoadMore} hasMore={false} isLoading={false} />)
+    render(
+      <SentinelComponent
+        onLoadMore={onLoadMore}
+        hasMore={false}
+        isLoading={false}
+      />
+    )
 
     expect(observers.length).toBe(0)
   })
 
   it('does not trigger multiple loads while the sentinel stays intersecting', () => {
     const onLoadMore = vi.fn()
-    render(<SentinelComponent onLoadMore={onLoadMore} hasMore isLoading={false} />)
+    render(
+      <SentinelComponent onLoadMore={onLoadMore} hasMore isLoading={false} />
+    )
 
     act(() => {
       observers[0].trigger(true)
@@ -162,7 +211,9 @@ describe('useInfiniteScroll', () => {
   })
 
   it('disconnects the observer when the sentinel is unmounted', () => {
-    const { unmount } = render(<SentinelComponent onLoadMore={vi.fn()} hasMore isLoading={false} />)
+    const { unmount } = render(
+      <SentinelComponent onLoadMore={vi.fn()} hasMore isLoading={false} />
+    )
 
     expect(observers.length).toBe(1)
 

@@ -128,6 +128,7 @@ Areas evaluated included:
    - `npm test`
    - `npm run build`
    - `npx eslint <changed-files>` (the full `npm run lint` script currently has pre-existing errors in `src/api/clients/*` and store files).
+   - `npm run format` to apply Prettier formatting (config in `.prettierrc.json`).
 
 ## Additional Guidelines
 

@@ -18,7 +18,8 @@ const MOCK_ARTICLES: Article[] = [
   },
   {
     id: 'guardian-business-2026-aug-20',
-    title: '‘Starve the beast’? The $40tn cost of Republicans’ false promises to cut spending',
+    title:
+      '‘Starve the beast’? The $40tn cost of Republicans’ false promises to cut spending',
     description:
       'The enormous US debt under Trump will hobble the next Democratic administration – just as the GOP planned',
     url: 'https://www.theguardian.com/business/2026/aug/20/us-national-debt-republicans',
@@ -46,7 +47,8 @@ const MOCK_ARTICLES: Article[] = [
   },
   {
     id: 'guardian-politics-live-2026-aug-20',
-    title: 'Burnham says fly-tippers will be forced to pay for the clean-up when they dump waste illegally – UK politics live',
+    title:
+      'Burnham says fly-tippers will be forced to pay for the clean-up when they dump waste illegally – UK politics live',
     description:
       'The prime minister plans to bring in the National Crime Agency to tackle the gangs behind dumps',
     url: 'https://www.theguardian.com/politics/live/2026/aug/20/andy-burnham-illegal-waste-dumps-labour-reform-conservatives-latest-news-updates',

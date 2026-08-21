@@ -76,7 +76,11 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
             to="/"
             onClick={onClose}
             end
-            className={location.pathname === '/' ? `${navBase} ${navActive}` : `${navBase} ${navInactive}`}
+            className={
+              location.pathname === '/'
+                ? `${navBase} ${navActive}`
+                : `${navBase} ${navInactive}`
+            }
           >
             Home
           </NavLink>

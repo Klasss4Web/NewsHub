@@ -11,23 +11,23 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider>
-      <PreferencesProvider>
-        <BrowserRouter
-        future={{
-          v7_startTransition: true,
-          v7_relativeSplatPath: true,
-        }}
-      >
-        <Routes>
-            <Route path="/" element={<Layout />}>
-              <Route index element={<HomePage />} />
-              <Route path="article/:id" element={<ArticleDetailPage />} />
-              <Route path="preferences" element={<PreferencesPage />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </PreferencesProvider>
+        <PreferencesProvider>
+          <BrowserRouter
+            future={{
+              v7_startTransition: true,
+              v7_relativeSplatPath: true,
+            }}
+          >
+            <Routes>
+              <Route path="/" element={<Layout />}>
+                <Route index element={<HomePage />} />
+                <Route path="article/:id" element={<ArticleDetailPage />} />
+                <Route path="preferences" element={<PreferencesPage />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </PreferencesProvider>
       </ThemeProvider>
     </ErrorBoundary>
   )

@@ -1,9 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import {
-  NewsApiAdapter,
-  GuardianAdapter,
-  NyTimesAdapter,
-} from '@/api/adapters'
+import { NewsApiAdapter, GuardianAdapter, NyTimesAdapter } from '@/api/adapters'
 import { NewsRepository } from '@/api/repositories/NewsRepository'
 import { useDebounce } from './useDebounce'
 import { useMockData } from './useMockData'

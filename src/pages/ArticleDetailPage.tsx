@@ -43,7 +43,9 @@ export const ArticleDetailPage = () => {
   if (!article) {
     return (
       <div className="mx-auto max-w-2xl rounded-xl border border-gray-200 bg-white p-8 text-center shadow-sm dark:border-gray-700 dark:bg-gray-800">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Article not found</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          Article not found
+        </h1>
         <p className="mt-2 text-gray-600 dark:text-gray-300">
           The article you're looking for isn't available. It may have expired or
           been removed.
@@ -95,11 +97,7 @@ export const ArticleDetailPage = () => {
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button asChild>
-              <a
-                href={article.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href={article.url} target="_blank" rel="noopener noreferrer">
                 Read Full Story
               </a>
             </Button>
