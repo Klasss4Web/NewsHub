@@ -1,7 +1,15 @@
 import { fetchNyTimesArticles } from '@/api/clients/nyTimesClient'
 import type { IArticleAdapter } from '@/api/adapters/IArticleAdapter'
-import type { AdapterResult, Article, ArticleFilter, PaginationOptions } from '@/types'
-import type { NyTimesMultimediaItem, NyTimesMultimediaObject } from '@/api/clients/nyTimesClient'
+import type {
+  AdapterResult,
+  Article,
+  ArticleFilter,
+  PaginationOptions,
+} from '@/types'
+import type {
+  NyTimesMultimediaItem,
+  NyTimesMultimediaObject,
+} from '@/api/clients/nyTimesClient'
 
 const NY_TIMES_IMAGE_BASE = 'https://www.nytimes.com/'
 
@@ -48,7 +56,10 @@ export class NyTimesAdapter implements IArticleAdapter {
       source: this.sourceName,
       sourceId: this.sourceId,
       author: item.byline?.original?.replace('By ', '') || null,
-      category: item.news_desk?.toLowerCase() || item.section_name?.toLowerCase() || null,
+      category:
+        item.news_desk?.toLowerCase() ||
+        item.section_name?.toLowerCase() ||
+        null,
       publishedAt: new Date(item.pub_date),
     }))
 

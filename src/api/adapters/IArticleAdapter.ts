@@ -7,5 +7,8 @@ import type { AdapterResult, ArticleFilter, PaginationOptions } from '@/types'
 export interface IArticleAdapter {
   readonly sourceId: string
   readonly sourceName: string
-  fetch(filter: ArticleFilter, pagination: PaginationOptions): Promise<AdapterResult>
+  fetch(
+    filter: ArticleFilter,
+    pagination: PaginationOptions
+  ): Promise<AdapterResult>
 }

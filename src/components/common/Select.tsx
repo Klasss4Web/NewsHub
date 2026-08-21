@@ -8,7 +8,14 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
   (
-    { label, options, placeholder = 'Select an option', className = '', id, ...props },
+    {
+      label,
+      options,
+      placeholder = 'Select an option',
+      className = '',
+      id,
+      ...props
+    },
     ref
   ) => {
     const selectId = id || (label ? `select-${label}` : undefined)

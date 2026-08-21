@@ -24,18 +24,42 @@
   }
 
   /* Stagger children animations */
-  .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
-  .stagger-children > *:nth-child(2) { animation-delay: 50ms; }
-  .stagger-children > *:nth-child(3) { animation-delay: 100ms; }
-  .stagger-children > *:nth-child(4) { animation-delay: 150ms; }
-  .stagger-children > *:nth-child(5) { animation-delay: 200ms; }
-  .stagger-children > *:nth-child(6) { animation-delay: 250ms; }
-  .stagger-children > *:nth-child(7) { animation-delay: 300ms; }
-  .stagger-children > *:nth-child(8) { animation-delay: 350ms; }
-  .stagger-children > *:nth-child(9) { animation-delay: 400ms; }
-  .stagger-children > *:nth-child(10) { animation-delay: 450ms; }
-  .stagger-children > *:nth-child(11) { animation-delay: 500ms; }
-  .stagger-children > *:nth-child(12) { animation-delay: 550ms; }
+  .stagger-children > *:nth-child(1) {
+    animation-delay: 0ms;
+  }
+  .stagger-children > *:nth-child(2) {
+    animation-delay: 50ms;
+  }
+  .stagger-children > *:nth-child(3) {
+    animation-delay: 100ms;
+  }
+  .stagger-children > *:nth-child(4) {
+    animation-delay: 150ms;
+  }
+  .stagger-children > *:nth-child(5) {
+    animation-delay: 200ms;
+  }
+  .stagger-children > *:nth-child(6) {
+    animation-delay: 250ms;
+  }
+  .stagger-children > *:nth-child(7) {
+    animation-delay: 300ms;
+  }
+  .stagger-children > *:nth-child(8) {
+    animation-delay: 350ms;
+  }
+  .stagger-children > *:nth-child(9) {
+    animation-delay: 400ms;
+  }
+  .stagger-children > *:nth-child(10) {
+    animation-delay: 450ms;
+  }
+  .stagger-children > *:nth-child(11) {
+    animation-delay: 500ms;
+  }
+  .stagger-children > *:nth-child(12) {
+    animation-delay: 550ms;
+  }
 }
 
 /* ── Theme transition ──────────────────────────────────────────────
@@ -71,10 +95,14 @@
 @keyframes theme-reveal-new {
   from {
     /* Start as a tiny circle centred on the toggle, then grow to fill. */
-    clip-path: circle(0% at var(--theme-transition-x, 50%) var(--theme-transition-y, 50%));
+    clip-path: circle(
+      0% at var(--theme-transition-x, 50%) var(--theme-transition-y, 50%)
+    );
   }
   to {
-    clip-path: circle(100% at var(--theme-transition-x, 50%) var(--theme-transition-y, 50%));
+    clip-path: circle(
+      100% at var(--theme-transition-x, 50%) var(--theme-transition-y, 50%)
+    );
   }
 }
 

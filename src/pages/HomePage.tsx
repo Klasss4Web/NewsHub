@@ -1,6 +1,5 @@
 import { useState, useCallback, useMemo } from 'react'
 import {
-  SearchBar,
   FilterPanel,
   ArticleList,
   FeedToggle,
@@ -31,12 +30,16 @@ export const HomePage = () => {
     [filter]
   )
 
-  const { articles, loading, loadingMore, error, sourceErrors, hasMore, loadMore, reset } =
-    useArticles({ filter: effectiveFilter, view })
-
-  const handleSearch = useCallback((keyword: string) => {
-    setFilter((prev) => ({ ...prev, keyword }))
-  }, [])
+  const {
+    articles,
+    loading,
+    loadingMore,
+    error,
+    sourceErrors,
+    hasMore,
+    loadMore,
+    reset,
+  } = useArticles({ filter: effectiveFilter, view })
 
   const handleFilterChange = useCallback((nextFilter: ArticleFilter) => {
     setFilter(nextFilter)
@@ -57,7 +60,8 @@ export const HomePage = () => {
         <ScrollReveal animation="slide-up" delay={75}>
           <div className="rounded-lg bg-primary-50 p-4 text-sm text-primary-800 dark:bg-primary-900/30 dark:text-primary-200">
             Showing articles matching your preferred sources (
-            {preferredSources.length}) and categories ({preferredCategories.length}).
+            {preferredSources.length}) and categories (
+            {preferredCategories.length}).
           </div>
         </ScrollReveal>
       )}
@@ -67,10 +71,6 @@ export const HomePage = () => {
       </ScrollReveal>
 
       <ScrollReveal animation="slide-up" delay={150}>
-        <SearchBar value={filter.keyword} onChange={handleSearch} />
-      </ScrollReveal>
-
-      <ScrollReveal animation="slide-up" delay={200}>
         <FilterPanel filter={filter} onChange={handleFilterChange} />
       </ScrollReveal>
 

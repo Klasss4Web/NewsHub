@@ -1,7 +1,10 @@
 import { useState } from 'react'
-import { Input, Select, Checkbox, Button } from '@/components/common'
-import { NEWS_SOURCES, NEWS_CATEGORIES } from '@/constants'
+
+import { capitalize } from '@/utils'
+import { SearchBar } from './SearchBar'
 import type { ArticleFilter } from '@/types'
+import { NEWS_SOURCES, NEWS_CATEGORIES } from '@/constants'
+import { Input, Select, Checkbox, Button } from '@/components/common'
 
 interface FilterPanelProps {
   filter: ArticleFilter
@@ -13,7 +16,7 @@ export const FilterPanel = ({ filter, onChange }: FilterPanelProps) => {
 
   const categoryOptions = NEWS_CATEGORIES.map((category) => ({
     value: category,
-    label: category.charAt(0).toUpperCase() + category.slice(1),
+    label: capitalize(category),
   }))
 
   const updateFilter = <K extends keyof ArticleFilter>(
@@ -61,34 +64,49 @@ export const FilterPanel = ({ filter, onChange }: FilterPanelProps) => {
 
       <div
         className={[
-          'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4',
-          isOpen ? 'block md:grid' : 'hidden md:grid',
+          'space-y-4',
+          isOpen ? 'block md:block' : 'hidden md:block',
         ].join(' ')}
       >
-        <Input
-          type="date"
-          label="From"
-          value={filter.fromDate || ''}
-          onChange={(event) => updateFilter('fromDate', event.target.value || null)}
-        />
-        <Input
-          type="date"
-          label="To"
-          value={filter.toDate || ''}
-          onChange={(event) => updateFilter('toDate', event.target.value || null)}
-        />
-        <Select
-          label="Category"
-          value={filter.category || ''}
-          onChange={(event) => updateFilter('category', event.target.value || null)}
-          options={categoryOptions}
-          placeholder="All categories"
-        />
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
+          <div className="lg:col-span-2">
+            <SearchBar
+              value={filter.keyword}
+              onChange={(value) => updateFilter('keyword', value)}
+            />
+          </div>
+          <Input
+            type="date"
+            label="From"
+            value={filter.fromDate || ''}
+            onChange={(event) =>
+              updateFilter('fromDate', event.target.value || null)
+            }
+          />
+          <Input
+            type="date"
+            label="To"
+            value={filter.toDate || ''}
+            onChange={(event) =>
+              updateFilter('toDate', event.target.value || null)
+            }
+          />
+          <Select
+            label="Category"
+            value={filter.category || ''}
+            onChange={(event) =>
+              updateFilter('category', event.target.value || null)
+            }
+            options={categoryOptions}
+            placeholder="All categories"
+          />
+        </div>
+
         <div>
-          <span className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <span className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
             Sources
           </span>
-          <div className="flex flex-wrap gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {NEWS_SOURCES.map((source) => (
               <Checkbox
                 key={source.id}

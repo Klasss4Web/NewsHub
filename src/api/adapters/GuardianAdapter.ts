@@ -1,7 +1,12 @@
 import { fetchGuardianArticles } from '@/api/clients/guardianClient'
 import type { IArticleAdapter } from '@/api/adapters/IArticleAdapter'
 import { stripHtml } from '@/utils'
-import type { AdapterResult, Article, ArticleFilter, PaginationOptions } from '@/types'
+import type {
+  AdapterResult,
+  Article,
+  ArticleFilter,
+  PaginationOptions,
+} from '@/types'
 
 export class GuardianAdapter implements IArticleAdapter {
   readonly sourceId = 'guardian'

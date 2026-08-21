@@ -1,9 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import {
-  NewsApiAdapter,
-  GuardianAdapter,
-  NyTimesAdapter,
-} from '@/api/adapters'
+import { NewsApiAdapter, GuardianAdapter, NyTimesAdapter } from '@/api/adapters'
 import { NewsRepository } from '@/api/repositories/NewsRepository'
 import { useDebounce } from './useDebounce'
 import { useMockData } from './useMockData'
@@ -115,25 +111,32 @@ export function useArticles({
     [filter, applyPersonalisation]
   )
 
+  // Keep a ref to the latest fetchPage callback so the initial-load effect
+  // only runs when the *debounced* filter changes, not on every keystroke.
+  const fetchPageRef = useRef(fetchPage)
+  useEffect(() => {
+    fetchPageRef.current = fetchPage
+  }, [fetchPage])
+
   useEffect(() => {
     pageRef.current = 1
     setArticles([])
     setHasMore(true)
-    fetchPage(1, false)
-  }, [debouncedFilter, view, fetchPage, isMockData])
+    fetchPageRef.current(1, false)
+  }, [debouncedFilter, view, isMockData])
 
   const loadMore = useCallback(() => {
     if (loading || loadingMore || !hasMore) return
     pageRef.current += 1
-    fetchPage(pageRef.current, true)
-  }, [loading, loadingMore, hasMore, fetchPage])
+    fetchPageRef.current(pageRef.current, true)
+  }, [loading, loadingMore, hasMore])
 
   const reset = useCallback(() => {
     pageRef.current = 1
     setArticles([])
     setHasMore(true)
-    fetchPage(1, false)
-  }, [fetchPage])
+    fetchPageRef.current(1, false)
+  }, [])
 
   return {
     articles,

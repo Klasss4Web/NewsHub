@@ -9,7 +9,7 @@ export const DataModeToggle = () => {
       <Toggle
         checked={isMockData}
         onChange={setIsMockData}
-        label={isMockData ? 'Using mock data' : 'Using live APIs'}
+        label={isMockData ? 'Using Saved Data' : 'Using Live APIs'}
       />
       <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
         {isMockData

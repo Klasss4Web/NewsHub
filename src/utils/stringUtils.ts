@@ -1,4 +1,12 @@
 /**
+ * Capitalise the first letter of a string.
+ */
+export const capitalize = (value: string): string => {
+  if (!value) return value
+  return value.charAt(0).toUpperCase() + value.slice(1)
+}
+
+/**
  * Create a URL-friendly slug from an arbitrary string.
  */
 export const slugify = (value: string): string => {

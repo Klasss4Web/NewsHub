@@ -92,11 +92,7 @@ export const fetchWithTimeout = async (
     return response
   } catch (error) {
     if (error instanceof Error && error.name === 'AbortError') {
-      throw new ApiError(
-        'Request timed out. Please try again.',
-        408,
-        null
-      )
+      throw new ApiError('Request timed out. Please try again.', 408, null)
     }
 
     if (error instanceof ApiError) {
@@ -104,7 +100,9 @@ export const fetchWithTimeout = async (
     }
 
     throw new ApiError(
-      error instanceof Error ? error.message : 'An unexpected network error occurred.',
+      error instanceof Error
+        ? error.message
+        : 'An unexpected network error occurred.',
       0,
       null
     )

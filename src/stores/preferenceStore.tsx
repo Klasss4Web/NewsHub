@@ -1,4 +1,10 @@
-import { createContext, useContext, useMemo, useCallback, type ReactNode } from 'react'
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useCallback,
+  type ReactNode,
+} from 'react'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { DEFAULT_CATEGORIES, DEFAULT_SOURCES } from '@/constants'
 import type { UserPreferences } from '@/types'
@@ -116,9 +122,7 @@ export const PreferencesProvider = ({ children }: { children: ReactNode }) => {
 export const usePreferences = (): PreferencesContextValue => {
   const context = useContext(PreferencesContext)
   if (!context) {
-    throw new Error(
-      'usePreferences must be used within a PreferencesProvider'
-    )
+    throw new Error('usePreferences must be used within a PreferencesProvider')
   }
   return context
 }

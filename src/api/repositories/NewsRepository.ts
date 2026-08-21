@@ -13,12 +13,14 @@ const formatError = (adapterName: string, error: unknown): string => {
     return `${adapterName} rate limit exceeded. Please try again later.`
   }
 
-  if (error instanceof ApiError && (error.status === 401 || error.status === 403)) {
+  if (
+    error instanceof ApiError &&
+    (error.status === 401 || error.status === 403)
+  ) {
     return `${adapterName} API key is invalid or expired.`
   }
 
-  const message =
-    error instanceof Error ? error.message : 'Unknown error'
+  const message = error instanceof Error ? error.message : 'Unknown error'
   return `${adapterName}: ${message}`
 }
 
@@ -39,7 +41,9 @@ export class NewsRepository {
     pagination: PaginationOptions
   ): Promise<RepositoryResult> {
     const selectedSources =
-      filter.sources.length > 0 ? filter.sources : this.adapters.map((a) => a.sourceId)
+      filter.sources.length > 0
+        ? filter.sources
+        : this.adapters.map((a) => a.sourceId)
 
     const activeAdapters = this.adapters.filter((adapter) =>
       selectedSources.includes(adapter.sourceId)

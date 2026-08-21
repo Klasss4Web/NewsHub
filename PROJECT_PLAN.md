@@ -11,28 +11,29 @@ Build a **mobile-first news aggregator web application** using **React.js + Type
 
 ## 2. Chosen Data Sources (3)
 
-| # | Source | API |
-|---|--------|-----|
-| 1 | **NewsAPI.org** | `https://newsapi.org/v2/everything` |
-| 2 | **The Guardian Open Platform** | `https://content.guardianapis.com/search` |
-| 3 | **The New York Times** | `https://api.nytimes.com/svc/search/v2/articlesearch.json` |
+| #   | Source                         | API                                                        |
+| --- | ------------------------------ | ---------------------------------------------------------- |
+| 1   | **NewsAPI.org**                | `https://newsapi.org/v2/everything`                        |
+| 2   | **The Guardian Open Platform** | `https://content.guardianapis.com/search`                  |
+| 3   | **The New York Times**         | `https://api.nytimes.com/svc/search/v2/articlesearch.json` |
 
 ## 3. Tech Stack
 
-| Layer | Tool | Reason |
-|-------|------|--------|
-| Build Tool | **Vite** | Fast HMR and TypeScript support |
-| Framework | **React 18** + **TypeScript** | Required by challenge |
-| Styling | **Tailwind CSS** | Utility-first, mobile-first responsive design |
-| HTTP | **Native `fetch`** via custom wrapper | Pattern adapted from internal reference project |
-| Routing | **React Router DOM 6** | Declarative SPA navigation |
-| State | **Context API + `useReducer`-style hooks** | Minimal third-party dependencies |
-| Tests | **Vitest** + **React Testing Library** | Fast, modern testing stack |
-| Container | **Docker** + **nginx** | Production-ready static serving |
+| Layer      | Tool                                       | Reason                                          |
+| ---------- | ------------------------------------------ | ----------------------------------------------- |
+| Build Tool | **Vite**                                   | Fast HMR and TypeScript support                 |
+| Framework  | **React 18** + **TypeScript**              | Required by challenge                           |
+| Styling    | **Tailwind CSS**                           | Utility-first, mobile-first responsive design   |
+| HTTP       | **Native `fetch`** via custom wrapper      | Pattern adapted from internal reference project |
+| Routing    | **React Router DOM 6**                     | Declarative SPA navigation                      |
+| State      | **Context API + `useReducer`-style hooks** | Minimal third-party dependencies                |
+| Tests      | **Vitest** + **React Testing Library**     | Fast, modern testing stack                      |
+| Container  | **Docker** + **nginx**                     | Production-ready static serving                 |
 
 ## 4. Architecture & SOLID Mapping
 
 ### 4.1 Adapter Pattern
+
 Each external API is mapped to a common `Article` model via an adapter implementing `IArticleAdapter`.
 
 ```
@@ -49,22 +50,27 @@ IArticleAdapter
 - **D:** The repository depends on the `IArticleAdapter` abstraction.
 
 ### 4.2 Repository Pattern
+
 `NewsRepository` orchestrates parallel fetches, aggregates results, deduplicates by URL, sorts by date, and gracefully handles partial failures using `Promise.allSettled`.
 
 ### 4.3 Custom Hooks
+
 - `useArticles` — fetches and paginates aggregated articles
 - `useInfiniteScroll` — triggers pagination via `IntersectionObserver`
 - `useDebounce` — debounces search input
 - `useLocalStorage` — persists preferences
 
 ### 4.4 Routing
+
 React Router DOM provides client-side routes for:
+
 - `/` — Home feed
 - `/article/:id` — Article detail page
 - `/preferences` — User preferences
 - `*` — Redirect to Home
 
 ### 4.4 State Management
+
 - Server/cache state is kept local to the `useArticles` hook.
 - User preferences use React Context API + `useLocalStorage`.
 
