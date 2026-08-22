@@ -61,7 +61,7 @@ export const ArticleDetailPage = () => {
 
   return (
     <div className="animate-slide-up mx-auto grid max-w-6xl grid-cols-1 gap-6 lg:grid-cols-3">
-      <article className="sticky top-6 self-start overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow duration-300 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 lg:col-span-2">
+      <article className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow duration-300 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 lg:sticky lg:top-6 lg:self-start lg:col-span-2">
         {article.imageUrl && (
           <div className="bg-gray-100 dark:bg-gray-700">
             <img
@@ -78,7 +78,7 @@ export const ArticleDetailPage = () => {
             {article.category && <Badge text={article.category} />}
           </div>
 
-          <h1 className="text-2xl font-bold leading-tight text-gray-900 dark:text-white sm:text-4xl">
+          <h1 className="text-xl font-bold leading-tight text-gray-900 dark:text-white sm:text-2xl">
             {article.title}
           </h1>
 
@@ -90,7 +90,7 @@ export const ArticleDetailPage = () => {
           </div>
 
           {article.description && (
-            <p className="mt-6 text-lg leading-relaxed text-gray-700 dark:text-gray-300">
+            <p className="mt-6 text-base leading-relaxed text-gray-700 dark:text-gray-300">
               {article.description}
             </p>
           )}

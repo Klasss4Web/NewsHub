@@ -12,7 +12,7 @@ export const Layout = () => {
       </main>
       <footer className="border-t border-gray-200 bg-white py-6 dark:border-gray-800 dark:bg-gray-900">
         <div className="mx-auto max-w-7xl px-4 text-center text-sm text-gray-500 dark:text-gray-400 sm:px-6 lg:px-8">
-          Built with React, TypeScript, and custom utilities.
+          © {new Date().getFullYear()} News Aggregator. All rights reserved.
         </div>
       </footer>
     </div>

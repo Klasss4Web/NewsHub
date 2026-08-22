@@ -1,11 +1,16 @@
 /**
  * Format a date for display using the native Intl API.
+ *
+ * Article dates are displayed in UTC so they align with the dates used in
+ * API queries. Without this, users in timezones ahead of UTC would see
+ * articles dated one day later than the date they filtered by.
  */
 export const formatDate = (date: Date): string => {
   return new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
+    timeZone: 'UTC',
   }).format(date)
 }
 

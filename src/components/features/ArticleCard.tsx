@@ -1,14 +1,16 @@
 import { Link } from 'react-router-dom'
+
+import type { Article } from '@/types'
+import { formatDate, truncate } from '@/utils'
 import { Badge, Tooltip } from '@/components/common'
 import { usePreferences } from '@/stores/preferenceStore'
-import { formatDate, truncate } from '@/utils'
-import type { Article } from '@/types'
 
 interface ArticleCardProps {
   article: Article
+  category?: string
 }
 
-export const ArticleCard = ({ article }: ArticleCardProps) => {
+export const ArticleCard = ({ article, category }: ArticleCardProps) => {
   const { toggleAuthor, isPreferredAuthor } = usePreferences()
   const isPreferred = isPreferredAuthor(article.author)
 
@@ -56,9 +58,11 @@ export const ArticleCard = ({ article }: ArticleCardProps) => {
       </Link>
 
       <div className="flex flex-1 flex-col p-4">
-        <div className="mb-2 flex flex-wrap items-center gap-2">
+        <div className="mb-2 flex flex-wrap items-center gap-2 capitalize">
           <Badge text={article.source} />
-          {article.category && <Badge text={article.category} />}
+          {(article.category || category) && (
+            <Badge text={article.category || (category as string)} />
+          )}
         </div>
 
         <h2 className="mb-2 text-lg font-semibold leading-snug text-gray-900 dark:text-white">

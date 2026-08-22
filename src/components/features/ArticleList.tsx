@@ -1,4 +1,3 @@
-import { ArticleCard } from './ArticleCard'
 import {
   SkeletonCard,
   ErrorMessage,
@@ -6,8 +5,9 @@ import {
   Button,
   ScrollReveal,
 } from '@/components/common'
-import { useInfiniteScroll } from '@/hooks'
 import type { Article } from '@/types'
+import { useInfiniteScroll } from '@/hooks'
+import { ArticleCard } from './ArticleCard'
 
 interface ArticleListProps {
   articles: Article[]
@@ -15,6 +15,7 @@ interface ArticleListProps {
   loadingMore: boolean
   error: string | null
   hasMore: boolean
+  category?: string
   onLoadMore: () => void
   onRetry: () => void
   emptyState?: {
@@ -31,6 +32,7 @@ export const ArticleList = ({
   hasMore,
   onLoadMore,
   onRetry,
+  category,
   emptyState,
 }: ArticleListProps) => {
   const sentinelCallbackRef = useInfiniteScroll<HTMLDivElement>({
@@ -68,15 +70,16 @@ export const ArticleList = ({
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {articles.map((article, index) => (
-          <ScrollReveal
-            key={article.id}
-            animation="slide-up"
-            delay={(index % 6) * 75}
-          >
-            <ArticleCard article={article} />
-          </ScrollReveal>
-        ))}
+        {Array.isArray(articles) &&
+          articles.map((article, index) => (
+            <ScrollReveal
+              key={article.id}
+              animation="slide-up"
+              delay={(index % 6) * 75}
+            >
+              <ArticleCard article={article} category={category} />
+            </ScrollReveal>
+          ))}
       </div>
 
       {loadingMore && (

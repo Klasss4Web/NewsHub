@@ -1,6 +1,7 @@
 import type { IArticleAdapter } from '@/api/adapters/IArticleAdapter'
 import { ApiError } from '@/utils'
 import type { Article, ArticleFilter, PaginationOptions } from '@/types'
+import { DEFAULT_SOURCES } from '@/constants'
 
 export interface RepositoryResult {
   articles: Article[]
@@ -71,7 +72,7 @@ export class NewsRepository {
     })
 
     const deduplicatedArticles = this.deduplicateByUrl(allArticles)
-    const sortedArticles = this.sortByDate(deduplicatedArticles)
+    const sortedArticles = this.sortByDateAndSource(deduplicatedArticles)
 
     return {
       articles: sortedArticles,
@@ -91,9 +92,16 @@ export class NewsRepository {
     })
   }
 
-  private sortByDate(articles: Article[]): Article[] {
-    return [...articles].sort(
-      (a, b) => b.publishedAt.getTime() - a.publishedAt.getTime()
-    )
+  private sortByDateAndSource(articles: Article[]): Article[] {
+    const sourceRank = (sourceId: string) =>
+      DEFAULT_SOURCES.indexOf(sourceId) === -1
+        ? DEFAULT_SOURCES.length
+        : DEFAULT_SOURCES.indexOf(sourceId)
+
+    return [...articles].sort((a, b) => {
+      const dateDiff = b.publishedAt.getTime() - a.publishedAt.getTime()
+      if (dateDiff !== 0) return dateDiff
+      return sourceRank(a.sourceId) - sourceRank(b.sourceId)
+    })
   }
 }
