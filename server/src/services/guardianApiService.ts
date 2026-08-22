@@ -33,8 +33,6 @@ export const fetchGuardianFromApi = async (
   if (options.to) params.set('to-date', options.to)
   if (options.category) params.set('section', options.category)
 
-  console.log({ P: `${GUARDIAN_BASE_URL}?${params.toString()}` })
-
   const response = await fetch(`${GUARDIAN_BASE_URL}?${params.toString()}`)
 
   if (!response.ok) {
