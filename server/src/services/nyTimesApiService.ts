@@ -40,8 +40,6 @@ export const fetchNyTimesFromApi = async (
     params.set('fq', options?.fq)
   }
 
-  console.log({ Q: `${NYTIMES_BASE_URL}?${params.toString()}` })
-
   const response = await fetch(`${NYTIMES_BASE_URL}?${params.toString()}`)
 
   if (!response.ok) {
