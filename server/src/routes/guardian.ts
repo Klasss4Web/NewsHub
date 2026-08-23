@@ -12,7 +12,7 @@ const router = Router()
 
 router.get('/api/guardian', async (req, res) => {
   try {
-    const { q, page, pageSize, from, to, category, section } = req.query
+    const { q, page, pageSize, from, to, section } = req.query
 
     const data = await fetchGuardianFromApi({
       q: typeof q === 'string' ? q : undefined,
