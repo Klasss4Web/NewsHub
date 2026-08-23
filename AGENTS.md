@@ -131,8 +131,8 @@ Areas evaluated included:
 4. Run quality checks:
    - `npm test` (runs client and server tests)
    - `npm run build` and `npm run build:server`
-   - `npx eslint <changed-files>` (the full `npm run lint` script currently has pre-existing errors in `src/api/clients/*` and store files).
-   - `npm run format` to apply Prettier formatting (config in `.prettierrc.json`).
+   - `npx eslint <changed-files>` (the full `npm run lint` script currently has pre-existing warnings in store files).
+   - `npm run format` to apply Prettier formatting (config in `.prettierrc`).
 
 ## Additional Guidelines
 

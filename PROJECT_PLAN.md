@@ -26,9 +26,9 @@ Build a **mobile-first news aggregator web application** using **React.js + Type
 | Styling    | **Tailwind CSS**                           | Utility-first, mobile-first responsive design   |
 | HTTP       | **Native `fetch`** via custom wrapper      | Pattern adapted from internal reference project |
 | Routing    | **React Router DOM 6**                     | Declarative SPA navigation                      |
-| State      | **Context API + `useReducer`-style hooks** | Minimal third-party dependencies                |
+| State      | **Context API + `useState`/`useLocalStorage`** | Minimal third-party dependencies                |
 | Tests      | **Vitest** + **React Testing Library**     | Fast, modern testing stack                      |
-| Container  | **Docker** + **nginx**                     | Production-ready static serving                 |
+| Container  | **Docker** (multi-stage Express server)    | Production-ready static serving                 |
 
 ## 4. Architecture & SOLID Mapping
 
@@ -58,7 +58,10 @@ IArticleAdapter
 - `useArticles` — fetches and paginates aggregated articles
 - `useInfiniteScroll` — triggers pagination via `IntersectionObserver`
 - `useDebounce` — debounces search input
-- `useLocalStorage` — persists preferences
+- `useLocalStorage` — persists preferences and theme
+- `useInView` — low-level viewport detection helper
+- `useMockData` — toggles between live and deterministic mock data
+- `useRelatedArticles` — finds related articles for the detail page
 
 ### 4.4 Routing
 
@@ -94,6 +97,17 @@ src/
 ├── pages/                 # Top-level views
 ├── services/              # Config and mock data services
 └── __tests__/             # Unit and component tests
+
+server/
+├── src/
+│   ├── config/            # Environment variable loading
+│   ├── routes/            # Express routes
+│   ├── services/          # External API calls
+│   ├── types/             # Server-side types
+│   └── utils/             # Logger and HTTP error helpers
+├── dist/                  # Compiled server output
+├── .env                   # Server-side secrets
+└── .env.example           # Example server environment variables
 ```
 
 ## 6. Core Features
@@ -106,16 +120,20 @@ src/
 - Dedicated article detail page with reader-friendly layout
 - Animations and hover effects across cards, buttons, and transitions
 - Runtime mock/live data toggle persisted in localStorage
-- Light/dark theme toggle persisted in localStorage
+- Light/dark theme toggle persisted in localStorage with View Transition API
+- Author preference toggles directly on article cards
 - Reveal-on-scroll and slide-up-on-render animations
 - Loading skeletons, error states, empty states
 - Mock-data fallback for development without API keys
 
 ## 7. Docker Strategy
 
-- Multi-stage `Dockerfile` builds the Vite app and serves it with nginx.
-- `docker-compose.yml` exposes the app on port `3000`.
-- Static assets are cached; security headers are added by nginx.
+- Multi-stage `Dockerfile`:
+  1. Builds the Vite React client into `dist/`.
+  2. Builds the Express server into `server/dist/`.
+  3. Runs the Express server, which serves the built React app and proxies `/api/*` routes to the upstream news APIs.
+- `docker-compose.yml` exposes the app on port `3000` and loads API keys from `server/.env`.
+- All API keys stay server-side; the browser never sees them.
 
 ## 8. Open Decisions (Resolved)
 

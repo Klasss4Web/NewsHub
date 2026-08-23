@@ -10,6 +10,7 @@ A mobile-first news aggregator built with **React 18**, **TypeScript**, **Vite**
 
 - **Search & Filter:** Search by keyword and filter by date range, category, and source.
 - **Personalised Feed:** Select preferred sources, categories, and authors.
+- **Author Preference Toggles:** Click the star next to an author on any article card to add or remove them from your preferred authors.
 - **Article Detail Page:** Click any news card to read it in a clean reader view at `/article/:id`.
 - **Infinite Scroll:** Seamless article loading via `IntersectionObserver`.
 - **Mobile-First:** Responsive layout optimised for mobile, tablet, and desktop.
@@ -30,7 +31,7 @@ A mobile-first news aggregator built with **React 18**, **TypeScript**, **Vite**
 - Native `fetch` with custom timeout wrapper
 - React Context API for preferences
 - Vitest + React Testing Library for tests
-- Docker
+- Docker (multi-stage build; Express serves the built client)
 
 ## Data Sources
 
@@ -79,6 +80,7 @@ Server environment variables (`server/.env`):
 
 ```env
 PORT=3001
+LOG_LEVEL=info
 NEWSAPI_KEY=your_newsapi_key
 GUARDIAN_KEY=your_guardian_key
 NYTIMES_KEY=your_nytimes_key
@@ -107,6 +109,12 @@ npm run dev        # in another terminal
 
 ```bash
 npm test
+```
+
+This runs all client and server tests from the project root. To run only the server tests:
+
+```bash
+cd server && npm test
 ```
 
 To run tests in watch mode:
@@ -143,7 +151,7 @@ docker-compose up --build
 
 Access the app at `http://localhost:3000`.
 
-The container runs the Express server, which serves the built React app and proxies `/api/news`, `/api/guardian`, and `/api/nytimes` to the upstream news APIs using the keys from `server/.env`. No API keys are exposed to the browser.
+The container runs the Express server, which serves the built React app and proxies `/api/news`, `/api/news/everything`, `/api/guardian`, and `/api/nytimes` to the upstream news APIs using the keys from `server/.env`. A `/health` endpoint is also available. No API keys are exposed to the browser.
 
 To stop:
 
@@ -177,16 +185,18 @@ server/
 │   ├── config/         # Environment variable loading
 │   ├── routes/         # Express routes
 │   ├── services/       # External API calls
-│   └── types/          # Server-side types
+│   ├── types/          # Server-side types
+│   └── utils/          # Logger and HTTP error helpers
 ├── dist/               # Compiled server output
-└── .env                # Server-side secrets
+├── .env                # Server-side secrets
+└── .env.example        # Example server environment variables
 ```
 
 ## Architecture Highlights
 
 - **Adapter Pattern:** Each news source has its own adapter that converts the API-specific response into a common `Article` model.
 - **Repository Pattern:** `NewsRepository` fetches from all adapters in parallel, aggregates results, deduplicates by URL, sorts by date, and gracefully handles partial failures.
-- **Server-Side API Proxy:** A Node.js/Express server in `server/` owns all news API keys and exposes `/api/news`, `/api/guardian`, and `/api/nytimes`. The React app calls these local endpoints, keeping keys out of the client bundle.
+- **Server-Side API Proxy:** A Node.js/Express server in `server/` owns all news API keys and exposes `/api/news`, `/api/news/everything`, `/api/guardian`, and `/api/nytimes`. The React app calls these local endpoints, keeping keys out of the client bundle.
 - **Category Filtering:** Guardian and NYTimes support category filtering at the API level, but NewsAPI's `/v2/everything` endpoint does not. The app therefore filters by category in the repository to keep results consistent across all sources. This means pages may contain fewer cards than the requested page size when many returned articles do not match the selected category.
 - **Custom Fetch Wrapper:** A timeout-aware `fetch` wrapper adapted from an internal reference project (`C:\Dev\open-retail\drivers-web-app\src\configs\fetch.js`).
 - **Custom State Management:** Preferences are managed via React Context API and persisted to `localStorage`.
@@ -196,7 +206,7 @@ server/
 ## Assumptions Made
 
 - **My Feed Page:** The assumption is that only selected user preferences are represented on the My Feed page. Articles are fetched only from preferred sources and filtered by preferred categories and authors.
-- **Author Parameters:** Author preference parameters are not currently passed to any endpoints (from the client to the server or to third-party APIs). Author matching is applied client-side because the upstream news APIs do not expose a dedicated author query parameter.
+- **Author Parameters:** Author preference parameters are not currently passed to any endpoints (from the client to the server or to third-party APIs). None of the selected upstream APIs — NewsAPI, The Guardian Open Platform, or The New York Times Article Search API — support filtering by author at the API level. Author matching is therefore applied client-side after articles are fetched.
 - **NewsAPI Endpoint Choice:** The NewsAPI `/v2/everything` endpoint accepts a date range but does not accept category filtering, while the `/v2/top-headlines` endpoint accepts category but does not accept a date range. The All News page uses `/top-headlines` so users can filter by category, and the My Feed page uses `/everything` so personalised date-range preferences can be applied at the API level.
 - **Rate Limiting:** NewsAPI and The New York Times enforce strict rate limits on their free-tier plans. Rate-limit responses are logged in the server terminal but are intentionally not surfaced to the frontend, so users may see fewer articles than expected without an explicit error message in the UI.
 

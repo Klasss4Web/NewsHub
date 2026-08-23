@@ -16,7 +16,8 @@
 - [x] Add React Router DOM and Article Detail page
 - [x] Add animations and hover effects across cards, buttons, and transitions
 - [x] Add runtime mock/live data toggle
-- [x] Add light/dark theme toggle
+- [x] Add light/dark theme toggle with View Transition API
+- [x] Add author preference toggles on article cards
 - [x] Fix source filtering and filter-panel flashing
 - [x] Fix mobile menu visibility
 - [x] Add reveal-on-scroll and slide-up-on-render animations
@@ -28,8 +29,7 @@
 
 ## Future Enhancements
 
-- [ ] Add author-based preference toggles directly on article cards
 - [ ] Implement service worker for offline reading
-- [ ] Add dark mode toggle
 - [ ] Add end-to-end tests with Playwright
 - [ ] Add CI/CD pipeline configuration
+- [ ] Add author search/filter within the preferences panel

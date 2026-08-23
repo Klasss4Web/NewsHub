@@ -10,6 +10,7 @@ export const PreferencePanel = () => {
     preferredAuthors,
     toggleSource,
     toggleCategory,
+    toggleAuthor,
     resetPreferences,
   } = usePreferences()
 
@@ -61,17 +62,45 @@ export const PreferencePanel = () => {
           Click the star icon next to an author on any article card to add or
           remove them from your preferred authors.
         </p>
-        {preferredAuthors.length === 0 ? (
-          <p className="mt-4 text-sm text-gray-400 dark:text-gray-500">
-            No preferred authors yet.
-          </p>
-        ) : (
-          <ul className="mt-4 list-inside list-disc text-sm text-gray-700 dark:text-gray-300">
-            {preferredAuthors.map((author) => (
-              <li key={author}>{author}</li>
-            ))}
-          </ul>
-        )}
+        <div className="mt-4 max-h-64 overflow-y-auto">
+          {preferredAuthors.length === 0 ? (
+            <p className="text-sm text-gray-400 dark:text-gray-500">
+              No preferred authors yet.
+            </p>
+          ) : (
+            <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+              {preferredAuthors.map((author) => (
+                <li
+                  key={author}
+                  className="flex items-center justify-between gap-2"
+                >
+                  <span className="break-words">{author}</span>
+                  <button
+                    type="button"
+                    onClick={() => toggleAuthor(author)}
+                    aria-label={`Remove ${author} from preferred authors`}
+                    className="shrink-0 rounded-full p-1 text-gray-400 hover:bg-red-50 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 dark:hover:bg-red-900/20 dark:focus:ring-offset-gray-800"
+                  >
+                    <svg
+                      className="h-4 w-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </section>
 
       <div className="flex justify-end">
