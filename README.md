@@ -54,7 +54,7 @@ If API keys are missing, the app falls back to deterministic mock data so it rem
 ### Installation
 
 ```bash
-cd C:\Dev\personal\news-aggregator
+cd news-aggregator
 npm install
 ```
 
@@ -198,7 +198,7 @@ server/
 - **Repository Pattern:** `NewsRepository` fetches from all adapters in parallel, aggregates results, deduplicates by URL, sorts by date, and gracefully handles partial failures.
 - **Server-Side API Proxy:** A Node.js/Express server in `server/` owns all news API keys and exposes `/api/news`, `/api/news/everything`, `/api/guardian`, and `/api/nytimes`. The React app calls these local endpoints, keeping keys out of the client bundle.
 - **Category Filtering:** Guardian and NYTimes support category filtering at the API level, but NewsAPI's `/v2/everything` endpoint does not. The app therefore filters by category in the repository to keep results consistent across all sources. This means pages may contain fewer cards than the requested page size when many returned articles do not match the selected category.
-- **Custom Fetch Wrapper:** A timeout-aware `fetch` wrapper adapted from an internal reference project (`C:\Dev\open-retail\drivers-web-app\src\configs\fetch.js`).
+- **Custom Fetch Wrapper:** A timeout-aware `fetch` wrapper adapted from an internal reference project (Personal project).
 - **Custom State Management:** Preferences are managed via React Context API and persisted to `localStorage`.
 - **Routing:** React Router DOM handles navigation between Home, Article Detail, and Preferences pages.
 - **Performance:** Images are lazy-loaded and search input is debounced.
@@ -208,21 +208,21 @@ server/
 - **My Feed Page:** The assumption is that only selected user preferences are represented on the My Feed page. Articles are fetched only from preferred sources and filtered by preferred categories and authors.
 - **Author Parameters:** Author preference parameters are not currently passed to any endpoints (from the client to the server or to third-party APIs). None of the selected upstream APIs — NewsAPI, The Guardian Open Platform, or The New York Times Article Search API — support filtering by author at the API level. Author matching is therefore applied client-side after articles are fetched.
 - **NewsAPI Endpoint Choice:** The NewsAPI `/v2/everything` endpoint accepts a date range but does not accept category filtering, while the `/v2/top-headlines` endpoint accepts category but does not accept a date range. The All News page uses `/top-headlines` so users can filter by category, and the My Feed page uses `/everything` so personalised date-range preferences can be applied at the API level.
-- **Rate Limiting:** NewsAPI and The New York Times enforce strict rate limits on their free-tier plans. Rate-limit responses are logged in the server terminal but are intentionally not surfaced to the frontend, so users may see fewer articles than expected without an explicit error message in the UI.
+- **Rate Limiting:** NewsAPI and The New York Times enforce strict rate limits on their free-tier plans. Rate-limit responses are logged in the server terminal but are intentionally not surfaced to the frontend, so users may see fewer articles than expected without an explicit error message in the UI at first but this decision was change to allow the frontend see the rate limit error and properly guide their usage at least for testing purpose.
 
 ## Available Scripts
 
-| Script                | Description                                          |
-| --------------------- | ---------------------------------------------------- |
-| `npm run dev`         | Start the Vite development server                    |
-| `npm run dev:server`  | Start the Express API development server             |
-| `npm run dev:all`     | Start both the Vite and Express dev servers          |
-| `npm run build`       | Build the production client bundle                   |
-| `npm run build:server`| Build the Express server                             |
-| `npm run preview`     | Preview the production build locally                 |
-| `npm test`            | Run all tests once (client + server)                 |
-| `npm run test:watch`  | Run tests in watch mode                              |
-| `npm run lint`        | Run ESLint                                           |
+| Script                 | Description                                 |
+| ---------------------- | ------------------------------------------- |
+| `npm run dev`          | Start the Vite development server           |
+| `npm run dev:server`   | Start the Express API development server    |
+| `npm run dev:all`      | Start both the Vite and Express dev servers |
+| `npm run build`        | Build the production client bundle          |
+| `npm run build:server` | Build the Express server                    |
+| `npm run preview`      | Preview the production build locally        |
+| `npm test`             | Run all tests once (client + server)        |
+| `npm run test:watch`   | Run tests in watch mode                     |
+| `npm run lint`         | Run ESLint                                  |
 
 ## License
 
