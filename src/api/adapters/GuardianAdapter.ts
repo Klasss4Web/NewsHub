@@ -1,7 +1,12 @@
 import { fetchGuardianArticles } from '@/api/clients/guardianClient'
 import type { IArticleAdapter } from '@/api/adapters/IArticleAdapter'
 import { stripHtml } from '@/utils'
-import type { AdapterResult, Article, ArticleFilter, PaginationOptions } from '@/types'
+import type {
+  AdapterResult,
+  Article,
+  ArticleFilter,
+  PaginationOptions,
+} from '@/types'
 
 export class GuardianAdapter implements IArticleAdapter {
   readonly sourceId = 'guardian'
@@ -14,18 +19,20 @@ export class GuardianAdapter implements IArticleAdapter {
     const response = await fetchGuardianArticles(filter, pagination)
     const { response: data } = response
 
-    const articles: Article[] = data.results.map((item) => ({
-      id: `guardian-${item.id}`,
-      title: item.webTitle,
-      description: stripHtml(item.fields?.trailText),
-      url: item.webUrl,
-      imageUrl: item.fields?.thumbnail || null,
-      source: this.sourceName,
-      sourceId: this.sourceId,
-      author: item.fields?.byline || null,
-      category: item.sectionId.toLowerCase(),
-      publishedAt: new Date(item.webPublicationDate),
-    }))
+    const articles: Article[] = Array.isArray(data.results)
+      ? data.results.map((item) => ({
+          id: `guardian-${item.id}`,
+          title: item.webTitle,
+          description: stripHtml(item.fields?.trailText),
+          url: item.webUrl,
+          imageUrl: item.fields?.thumbnail || null,
+          source: this.sourceName,
+          sourceId: this.sourceId,
+          author: item.fields?.byline || null,
+          category: item.sectionId.toLowerCase(),
+          publishedAt: new Date(item.webPublicationDate),
+        }))
+      : []
 
     return {
       articles,

@@ -34,9 +34,9 @@ describe('fetchWithTimeout', () => {
       new Response(null, { status: 500, statusText: 'Internal Server Error' })
     )
 
-    await expect(fetchWithTimeout('https://api.example.com/data')).rejects.toThrow(
-      'HTTP 500: Internal Server Error'
-    )
+    await expect(
+      fetchWithTimeout('https://api.example.com/data')
+    ).rejects.toThrow('HTTP 500: Internal Server Error')
   })
 
   it('throws timeout error when request aborts', async () => {

@@ -4,25 +4,28 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="A modern news aggregator pulling articles from multiple trusted sources" />
+    <meta
+      name="description"
+      content="A modern news aggregator pulling articles from multiple trusted sources"
+    />
     <title>News Aggregator</title>
     <script>
       // Apply the user's saved theme (or system preference) before first paint
       // to avoid a flash of the wrong colour scheme.
-      (function () {
+      ;(function () {
         try {
-          var stored = window.localStorage.getItem('news-aggregator-theme');
+          var stored = window.localStorage.getItem('news-aggregator-theme')
           var isDark =
             stored === 'dark' ||
             (stored === null &&
-              window.matchMedia('(prefers-color-scheme: dark)').matches);
+              window.matchMedia('(prefers-color-scheme: dark)').matches)
           if (isDark) {
-            document.documentElement.classList.add('dark');
+            document.documentElement.classList.add('dark')
           }
         } catch (e) {
           // ignore storage access errors
         }
-      })();
+      })()
     </script>
   </head>
   <body>

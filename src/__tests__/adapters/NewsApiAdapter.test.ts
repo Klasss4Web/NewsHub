@@ -66,4 +66,25 @@ describe('NewsApiAdapter', () => {
 
     expect(result.hasMore).toBe(true)
   })
+
+  it('returns an empty array when articles is not an array', async () => {
+    vi.spyOn(client, 'fetchNewsApiArticles').mockResolvedValue({
+      status: 'ok',
+      totalResults: 0,
+      articles: null,
+    } as unknown as NewsApiResponse)
+
+    const result = await adapter.fetch(
+      {
+        keyword: 'test',
+        fromDate: null,
+        toDate: null,
+        category: null,
+        sources: [],
+      },
+      { page: 1, pageSize: 10 }
+    )
+
+    expect(result.articles).toEqual([])
+  })
 })

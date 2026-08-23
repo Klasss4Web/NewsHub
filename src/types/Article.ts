@@ -32,5 +32,4 @@ export interface AdapterResult {
 export interface NewsSource {
   id: string
   name: string
-  key: string
 }

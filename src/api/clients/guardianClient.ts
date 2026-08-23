@@ -1,4 +1,5 @@
-import { API_ENDPOINTS, API_KEYS, useMockData } from '@/services/apiConfigService'
+import { API_BASE_URL } from '@/services/apiConfigService'
+import { getUseMockData } from '@/services/dataModeService'
 import { fetchMockArticles } from '@/services/mockDataService'
 import { fetchWithTimeout } from '@/utils'
 import type { ArticleFilter, PaginationOptions } from '@/types'
@@ -27,14 +28,19 @@ export interface GuardianResponse {
 }
 
 /**
- * Fetch articles from The Guardian Open Platform.
+ * Fetch articles from The Guardian Open Platform via the local proxy server.
  */
 export const fetchGuardianArticles = async (
   filter: ArticleFilter,
   pagination: PaginationOptions
 ): Promise<GuardianResponse> => {
-  if (useMockData() || !API_KEYS.guardian) {
-    const result = await fetchMockArticles(filter, pagination.page, pagination.pageSize, 'guardian')
+  if (getUseMockData()) {
+    const result = await fetchMockArticles(
+      filter,
+      pagination.page,
+      pagination.pageSize,
+      'guardian'
+    )
     return {
       response: {
         status: 'ok',
@@ -63,17 +69,16 @@ export const fetchGuardianArticles = async (
     q: filter.keyword || 'news',
     page: String(pagination.page),
     'page-size': String(pagination.pageSize),
-    'api-key': API_KEYS.guardian,
     'order-by': 'newest',
     'show-fields': 'trailText,thumbnail,byline',
   })
 
-  if (filter.fromDate) params.set('from-date', filter.fromDate)
-  if (filter.toDate) params.set('to-date', filter.toDate)
+  if (filter.fromDate) params.set('from', filter.fromDate)
+  if (filter.toDate) params.set('to', filter.toDate)
   if (filter.category) params.set('section', filter.category)
 
   const response = await fetchWithTimeout(
-    `${API_ENDPOINTS.guardian}?${params.toString()}`
+    `${API_BASE_URL}/guardian?${params.toString()}`
   )
   return response.json() as Promise<GuardianResponse>
 }

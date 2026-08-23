@@ -1,7 +1,12 @@
 import { describe, it, expect, vi } from 'vitest'
 import { NewsRepository } from '@/api/repositories/NewsRepository'
 import type { IArticleAdapter } from '@/api/adapters'
-import type { AdapterResult, Article, ArticleFilter, PaginationOptions } from '@/types'
+import type {
+  AdapterResult,
+  Article,
+  ArticleFilter,
+  PaginationOptions,
+} from '@/types'
 
 const createMockAdapter = (
   id: string,
@@ -44,8 +49,18 @@ describe('NewsRepository', () => {
   const pagination: PaginationOptions = { page: 1, pageSize: 10 }
 
   it('aggregates articles from multiple adapters', async () => {
-    const adapterA = createMockAdapter('a', 'Source A', [mockArticle({ id: 'a-1', url: 'https://example.com/a' })], false)
-    const adapterB = createMockAdapter('b', 'Source B', [mockArticle({ id: 'b-1', url: 'https://example.com/b' })], false)
+    const adapterA = createMockAdapter(
+      'a',
+      'Source A',
+      [mockArticle({ id: 'a-1', url: 'https://example.com/a' })],
+      false
+    )
+    const adapterB = createMockAdapter(
+      'b',
+      'Source B',
+      [mockArticle({ id: 'b-1', url: 'https://example.com/b' })],
+      false
+    )
     const repository = new NewsRepository([adapterA, adapterB])
 
     const result = await repository.fetchArticles(filter, pagination)
@@ -55,8 +70,18 @@ describe('NewsRepository', () => {
   })
 
   it('deduplicates articles by URL', async () => {
-    const adapterA = createMockAdapter('a', 'Source A', [mockArticle({ id: 'a-1', url: 'https://dup.com' })], false)
-    const adapterB = createMockAdapter('b', 'Source B', [mockArticle({ id: 'b-1', url: 'https://dup.com' })], false)
+    const adapterA = createMockAdapter(
+      'a',
+      'Source A',
+      [mockArticle({ id: 'a-1', url: 'https://dup.com' })],
+      false
+    )
+    const adapterB = createMockAdapter(
+      'b',
+      'Source B',
+      [mockArticle({ id: 'b-1', url: 'https://dup.com' })],
+      false
+    )
     const repository = new NewsRepository([adapterA, adapterB])
 
     const result = await repository.fetchArticles(filter, pagination)
@@ -70,7 +95,12 @@ describe('NewsRepository', () => {
       sourceName: 'Failing Source',
       fetch: vi.fn().mockRejectedValue(new Error('Network error')),
     }
-    const goodAdapter = createMockAdapter('good', 'Good Source', [mockArticle({ id: 'g-1' })], false)
+    const goodAdapter = createMockAdapter(
+      'good',
+      'Good Source',
+      [mockArticle({ id: 'g-1' })],
+      false
+    )
     const repository = new NewsRepository([failingAdapter, goodAdapter])
 
     const result = await repository.fetchArticles(filter, pagination)
@@ -78,4 +108,5 @@ describe('NewsRepository', () => {
     expect(result.articles).toHaveLength(1)
     expect(result.errors).toContain('Failing Source: Network error')
   })
+
 })

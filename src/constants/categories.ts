@@ -1,12 +1,12 @@
 export const NEWS_CATEGORIES = [
   'business',
+  'politics',
+  'technology',
+  'science',
+  'world',
   'entertainment',
   'health',
-  'science',
   'sports',
-  'technology',
-  'politics',
-  'world',
 ] as const
 
 export type NewsCategory = (typeof NEWS_CATEGORIES)[number]

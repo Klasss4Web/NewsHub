@@ -1,5 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
-import { getUseMockData, setUseMockData, subscribeToDataMode } from '@/services/dataModeService'
+import {
+  getUseMockData,
+  setUseMockData,
+  subscribeToDataMode,
+} from '@/services/dataModeService'
 
 /**
  * Hook to read and toggle mock-data mode at runtime.

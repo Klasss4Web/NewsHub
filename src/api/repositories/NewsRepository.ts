@@ -1,6 +1,7 @@
 import type { IArticleAdapter } from '@/api/adapters/IArticleAdapter'
 import { ApiError } from '@/utils'
 import type { Article, ArticleFilter, PaginationOptions } from '@/types'
+import { DEFAULT_SOURCES } from '@/constants'
 
 export interface RepositoryResult {
   articles: Article[]
@@ -13,12 +14,14 @@ const formatError = (adapterName: string, error: unknown): string => {
     return `${adapterName} rate limit exceeded. Please try again later.`
   }
 
-  if (error instanceof ApiError && (error.status === 401 || error.status === 403)) {
+  if (
+    error instanceof ApiError &&
+    (error.status === 401 || error.status === 403)
+  ) {
     return `${adapterName} API key is invalid or expired.`
   }
 
-  const message =
-    error instanceof Error ? error.message : 'Unknown error'
+  const message = error instanceof Error ? error.message : 'Unknown error'
   return `${adapterName}: ${message}`
 }
 
@@ -39,7 +42,9 @@ export class NewsRepository {
     pagination: PaginationOptions
   ): Promise<RepositoryResult> {
     const selectedSources =
-      filter.sources.length > 0 ? filter.sources : this.adapters.map((a) => a.sourceId)
+      filter.sources.length > 0
+        ? filter.sources
+        : this.adapters.map((a) => a.sourceId)
 
     const activeAdapters = this.adapters.filter((adapter) =>
       selectedSources.includes(adapter.sourceId)
@@ -67,7 +72,7 @@ export class NewsRepository {
     })
 
     const deduplicatedArticles = this.deduplicateByUrl(allArticles)
-    const sortedArticles = this.sortByDate(deduplicatedArticles)
+    const sortedArticles = this.sortByDateAndSource(deduplicatedArticles)
 
     return {
       articles: sortedArticles,
@@ -87,9 +92,16 @@ export class NewsRepository {
     })
   }
 
-  private sortByDate(articles: Article[]): Article[] {
-    return [...articles].sort(
-      (a, b) => b.publishedAt.getTime() - a.publishedAt.getTime()
-    )
+  private sortByDateAndSource(articles: Article[]): Article[] {
+    const sourceRank = (sourceId: string) =>
+      DEFAULT_SOURCES.indexOf(sourceId) === -1
+        ? DEFAULT_SOURCES.length
+        : DEFAULT_SOURCES.indexOf(sourceId)
+
+    return [...articles].sort((a, b) => {
+      const dateDiff = b.publishedAt.getTime() - a.publishedAt.getTime()
+      if (dateDiff !== 0) return dateDiff
+      return sourceRank(a.sourceId) - sourceRank(b.sourceId)
+    })
   }
 }

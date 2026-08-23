@@ -1,4 +1,5 @@
-import { API_ENDPOINTS, API_KEYS, useMockData } from '@/services/apiConfigService'
+import { API_BASE_URL } from '@/services/apiConfigService'
+import { getUseMockData } from '@/services/dataModeService'
 import { fetchMockArticles } from '@/services/mockDataService'
 import { fetchWithTimeout } from '@/utils'
 import type { ArticleFilter, PaginationOptions } from '@/types'
@@ -19,14 +20,19 @@ export interface NewsApiResponse {
 }
 
 /**
- * Fetch articles from NewsAPI.org.
+ * Fetch articles from NewsAPI.org via the local proxy server.
  */
 export const fetchNewsApiArticles = async (
   filter: ArticleFilter,
   pagination: PaginationOptions
 ): Promise<NewsApiResponse> => {
-  if (useMockData() || !API_KEYS.newsapi) {
-    const result = await fetchMockArticles(filter, pagination.page, pagination.pageSize, 'newsapi')
+  if (getUseMockData()) {
+    const result = await fetchMockArticles(
+      filter,
+      pagination.page,
+      pagination.pageSize,
+      'newsapi'
+    )
     return {
       status: 'ok',
       totalResults: result.totalResults,
@@ -47,15 +53,34 @@ export const fetchNewsApiArticles = async (
     q: filter.keyword || 'news',
     page: String(pagination.page),
     pageSize: String(pagination.pageSize),
-    apiKey: API_KEYS.newsapi,
     sortBy: 'publishedAt',
   })
 
-  if (filter.fromDate) params.set('from', filter.fromDate)
-  if (filter.toDate) params.set('to', filter.toDate)
+  const useEverything = filter.newsApiEndpoint === 'everything'
+
+  if (useEverything) {
+    // /everything supports date ranges but does not support category.
+    // Avoid calling the API when only the start date is selected; a range
+    // needs an end date to be meaningful for this endpoint.
+    if (filter.fromDate && !filter.toDate) {
+      return {
+        status: 'ok',
+        totalResults: 0,
+        articles: [],
+      }
+    }
+
+    if (filter.fromDate) params.set('from', filter.fromDate)
+    if (filter.toDate) params.set('to', filter.toDate)
+  } else {
+    // /top-headlines supports category but does not support date ranges.
+    if (filter.category) params.set('category', filter.category)
+  }
+
+  const endpoint = useEverything ? 'news/everything' : 'news'
 
   const response = await fetchWithTimeout(
-    `${API_ENDPOINTS.newsapi}?${params.toString()}`
+    `${API_BASE_URL}/${endpoint}?${params.toString()}`
   )
   return response.json() as Promise<NewsApiResponse>
 }
