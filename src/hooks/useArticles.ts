@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { NewsApiAdapter, GuardianAdapter, NyTimesAdapter } from '@/api/adapters'
 import { NewsRepository } from '@/api/repositories/NewsRepository'
 import { useDebounce } from './useDebounce'
@@ -36,8 +36,14 @@ export function useArticles({
   view,
 }: UseArticlesOptions): UseArticlesResult {
   const [isMockData] = useMockData()
-  const { isPreferredSource, isPreferredCategory, isPreferredAuthor } =
-    usePreferences()
+  const {
+    preferredSources,
+    preferredCategories,
+    preferredAuthors,
+    isPreferredSource,
+    isPreferredCategory,
+    isPreferredAuthor,
+  } = usePreferences()
   const [articles, setArticles] = useState<Article[]>([])
   const [loading, setLoading] = useState(false)
   const [loadingMore, setLoadingMore] = useState(false)
@@ -46,6 +52,36 @@ export function useArticles({
   const [hasMore, setHasMore] = useState(true)
   const pageRef = useRef(1)
   const debouncedFilter = useDebounce(filter, 350)
+
+  /**
+   * In personalised view the API calls should be scoped to the user's
+   * preferred sources and categories. This avoids fetching articles from
+   * unwanted sources and lets the APIs do the filtering where possible.
+   * All News continues to use the filter from the FilterPanel unchanged.
+   */
+  const personalisedFilters = useMemo<ArticleFilter[]>(() => {
+    // The NewsAPI endpoint is chosen by feed view, not by the filter panel.
+    // All News uses /top-headlines (category, no date range); My Feed uses
+    // /everything (date range, no category).
+    const newsApiEndpoint = view === 'personalised' ? 'everything' : 'top-headlines'
+
+    if (view !== 'personalised') {
+      return [{ ...filter, newsApiEndpoint }]
+    }
+
+    const sources =
+      preferredSources.length > 0 ? preferredSources : DEFAULT_SOURCES
+    const categories =
+      preferredCategories.length > 0 ? preferredCategories : [null]
+
+    return categories.map((category) => ({
+      ...filter,
+      sources,
+      category,
+      authors: preferredAuthors,
+      newsApiEndpoint,
+    }))
+  }, [filter, view, preferredSources, preferredCategories, preferredAuthors])
 
   const applyPersonalisation = useCallback(
     (items: Article[]) => {
@@ -70,21 +106,37 @@ export function useArticles({
       }
 
       try {
-        const effectiveSources =
-          filter.sources.length > 0 ? filter.sources : DEFAULT_SOURCES
-
-        const result = await repository.fetchArticles(
-          { ...filter, sources: effectiveSources },
-          { page, pageSize: PAGE_SIZE }
+        const results = await Promise.all(
+          personalisedFilters.map((personalisedFilter) =>
+            repository.fetchArticles(personalisedFilter, {
+              page,
+              pageSize: PAGE_SIZE,
+            })
+          )
         )
 
-        setSourceErrors(result.errors)
+        const allArticles = results.flatMap((result) => result.articles)
+        const allErrors = results.flatMap((result) => result.errors)
+        const hasMorePages = results.some((result) => result.hasMore)
+
+        setSourceErrors([...new Set(allErrors)])
+
+        // Deduplicate across all personalised filter results and sort by date.
+        const seenUrls = new Set<string>()
+        const deduplicatedArticles = allArticles.filter((article) => {
+          if (seenUrls.has(article.url)) return false
+          seenUrls.add(article.url)
+          return true
+        })
+        const sortedArticles = [...deduplicatedArticles].sort(
+          (a, b) => b.publishedAt.getTime() - a.publishedAt.getTime()
+        )
 
         if (page === 1) {
-          setArticles(applyPersonalisation(result.articles))
+          setArticles(applyPersonalisation(sortedArticles))
         } else {
           setArticles((prev) => {
-            const combined = [...prev, ...result.articles]
+            const combined = [...prev, ...sortedArticles]
             const seen = new Set<string>()
             const deduplicated = combined.filter((article) => {
               if (seen.has(article.id)) return false
@@ -95,7 +147,7 @@ export function useArticles({
           })
         }
 
-        setHasMore(result.hasMore)
+        setHasMore(hasMorePages)
       } catch (err) {
         setError(
           err instanceof Error
@@ -108,7 +160,7 @@ export function useArticles({
         setLoadingMore(false)
       }
     },
-    [filter, applyPersonalisation]
+    [personalisedFilters, applyPersonalisation]
   )
 
   // Keep a ref to the latest fetchPage callback so the initial-load effect

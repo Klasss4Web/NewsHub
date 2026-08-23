@@ -108,4 +108,5 @@ describe('NewsRepository', () => {
     expect(result.articles).toHaveLength(1)
     expect(result.errors).toContain('Failing Source: Network error')
   })
+
 })

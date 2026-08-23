@@ -17,18 +17,20 @@ export class NewsApiAdapter implements IArticleAdapter {
   ): Promise<AdapterResult> {
     const response = await fetchNewsApiArticles(filter, pagination)
 
-    const articles: Article[] = response.articles.map((item, index) => ({
-      id: `newsapi-${item.url || index}`,
-      title: item.title,
-      description: item.description,
-      url: item.url,
-      imageUrl: item.urlToImage,
-      source: this.sourceName,
-      sourceId: this.sourceId,
-      author: item.author,
-      category: null,
-      publishedAt: new Date(item.publishedAt),
-    }))
+    const articles: Article[] = Array.isArray(response.articles)
+      ? response.articles.map((item, index) => ({
+          id: `newsapi-${item.url || index}`,
+          title: item.title,
+          description: item.description,
+          url: item.url,
+          imageUrl: item.urlToImage,
+          source: this.sourceName,
+          sourceId: this.sourceId,
+          author: item.author,
+          category: null,
+          publishedAt: new Date(item.publishedAt),
+        }))
+      : []
 
     return {
       articles,

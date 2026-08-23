@@ -26,14 +26,15 @@ A mobile-first news aggregator built with **React 18**, **TypeScript**, **Vite**
 - Vite
 - Tailwind CSS
 - React Router DOM 6
+- Node.js + Express API proxy
 - Native `fetch` with custom timeout wrapper
 - React Context API for preferences
 - Vitest + React Testing Library for tests
-- Docker + nginx
+- Docker
 
 ## Data Sources
 
-The app integrates at least three news sources as required:
+The app integrates at least three news sources as required. All external API calls are proxied through the Express server so the API keys never reach the browser:
 
 1. [NewsAPI.org](https://newsapi.org)
 2. [The Guardian Open Platform](https://open-platform.theguardian.com)
@@ -58,28 +59,49 @@ npm install
 
 ### Environment Variables
 
-Copy the example environment file and add your API keys:
+Copy the example environment files and add your API keys:
 
 ```bash
 cp .env.example .env
+cp server/.env.example server/.env
 ```
 
+Client environment variables (`.env`):
+
 ```env
-VITE_NEWSAPI_KEY=your_newsapi_key
-VITE_GUARDIAN_KEY=your_guardian_key
-VITE_NYTIMES_KEY=your_nytimes_key
+VITE_API_BASE_URL=/api
 
 # Optional: use mock data without API keys
 VITE_USE_MOCK_DATA=false
 ```
 
-### Running Locally
+Server environment variables (`server/.env`):
 
-```bash
-npm run dev
+```env
+PORT=3001
+NEWSAPI_KEY=your_newsapi_key
+GUARDIAN_KEY=your_guardian_key
+NYTIMES_KEY=your_nytimes_key
 ```
 
-The application will be available at `http://localhost:3000`.
+All API keys are kept on the server only and are never bundled into the React client.
+
+### Running Locally
+
+Start the Express API server and the Vite dev server together:
+
+```bash
+npm run dev:all
+```
+
+The React app will be available at `http://localhost:3000` and the API proxy at `http://localhost:3001`.
+
+You can also start each server separately:
+
+```bash
+npm run dev:server
+npm run dev        # in another terminal
+```
 
 ### Running Tests
 
@@ -96,12 +118,22 @@ npm run test:watch
 ### Building for Production
 
 ```bash
-npm run build
+npm run build        # Build the React client
+npm run build:server # Build the Express server
 ```
 
-The static bundle will be output to the `dist/` directory.
+The static bundle will be output to the `dist/` directory and the compiled server to `server/dist/`.
 
 ### Docker
+
+Make sure `server/.env` contains your API keys:
+
+```env
+PORT=3001
+NEWSAPI_KEY=your_newsapi_key
+GUARDIAN_KEY=your_guardian_key
+NYTIMES_KEY=your_nytimes_key
+```
 
 Build and run the containerised application:
 
@@ -110,6 +142,8 @@ docker-compose up --build
 ```
 
 Access the app at `http://localhost:3000`.
+
+The container runs the Express server, which serves the built React app and proxies `/api/news`, `/api/guardian`, and `/api/nytimes` to the upstream news APIs using the keys from `server/.env`. No API keys are exposed to the browser.
 
 To stop:
 
@@ -137,27 +171,48 @@ src/
 ├── pages/              # Home, Article Detail, and Preferences views
 ├── services/           # API config and mock data
 └── __tests__/          # Unit and component tests
+
+server/
+├── src/
+│   ├── config/         # Environment variable loading
+│   ├── routes/         # Express routes
+│   ├── services/       # External API calls
+│   └── types/          # Server-side types
+├── dist/               # Compiled server output
+└── .env                # Server-side secrets
 ```
 
 ## Architecture Highlights
 
 - **Adapter Pattern:** Each news source has its own adapter that converts the API-specific response into a common `Article` model.
 - **Repository Pattern:** `NewsRepository` fetches from all adapters in parallel, aggregates results, deduplicates by URL, sorts by date, and gracefully handles partial failures.
+- **Server-Side API Proxy:** A Node.js/Express server in `server/` owns all news API keys and exposes `/api/news`, `/api/guardian`, and `/api/nytimes`. The React app calls these local endpoints, keeping keys out of the client bundle.
+- **Category Filtering:** Guardian and NYTimes support category filtering at the API level, but NewsAPI's `/v2/everything` endpoint does not. The app therefore filters by category in the repository to keep results consistent across all sources. This means pages may contain fewer cards than the requested page size when many returned articles do not match the selected category.
 - **Custom Fetch Wrapper:** A timeout-aware `fetch` wrapper adapted from an internal reference project (`C:\Dev\open-retail\drivers-web-app\src\configs\fetch.js`).
 - **Custom State Management:** Preferences are managed via React Context API and persisted to `localStorage`.
 - **Routing:** React Router DOM handles navigation between Home, Article Detail, and Preferences pages.
-- **Performance:** Article cards are memoised, images are lazy-loaded, and search input is debounced.
+- **Performance:** Images are lazy-loaded and search input is debounced.
+
+## Assumptions Made
+
+- **My Feed Page:** The assumption is that only selected user preferences are represented on the My Feed page. Articles are fetched only from preferred sources and filtered by preferred categories and authors.
+- **Author Parameters:** Author preference parameters are not currently passed to any endpoints (from the client to the server or to third-party APIs). Author matching is applied client-side because the upstream news APIs do not expose a dedicated author query parameter.
+- **NewsAPI Endpoint Choice:** The NewsAPI `/v2/everything` endpoint accepts a date range but does not accept category filtering, while the `/v2/top-headlines` endpoint accepts category but does not accept a date range. The All News page uses `/top-headlines` so users can filter by category, and the My Feed page uses `/everything` so personalised date-range preferences can be applied at the API level.
+- **Rate Limiting:** NewsAPI and The New York Times enforce strict rate limits on their free-tier plans. Rate-limit responses are logged in the server terminal but are intentionally not surfaced to the frontend, so users may see fewer articles than expected without an explicit error message in the UI.
 
 ## Available Scripts
 
-| Script               | Description                          |
-| -------------------- | ------------------------------------ |
-| `npm run dev`        | Start the Vite development server    |
-| `npm run build`      | Build the production bundle          |
-| `npm run preview`    | Preview the production build locally |
-| `npm test`           | Run all tests once                   |
-| `npm run test:watch` | Run tests in watch mode              |
-| `npm run lint`       | Run ESLint                           |
+| Script                | Description                                          |
+| --------------------- | ---------------------------------------------------- |
+| `npm run dev`         | Start the Vite development server                    |
+| `npm run dev:server`  | Start the Express API development server             |
+| `npm run dev:all`     | Start both the Vite and Express dev servers          |
+| `npm run build`       | Build the production client bundle                   |
+| `npm run build:server`| Build the Express server                             |
+| `npm run preview`     | Preview the production build locally                 |
+| `npm test`            | Run all tests once (client + server)                 |
+| `npm run test:watch`  | Run tests in watch mode                              |
+| `npm run lint`        | Run ESLint                                           |
 
 ## License
 

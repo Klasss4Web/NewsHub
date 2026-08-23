@@ -1,7 +1,7 @@
-import { API_ENDPOINTS, API_KEYS } from '@/services/apiConfigService'
+import { API_BASE_URL } from '@/services/apiConfigService'
 import { getUseMockData } from '@/services/dataModeService'
 import { fetchMockArticles } from '@/services/mockDataService'
-import { fetchWithTimeout } from '@/utils'
+import { capitalize, fetchWithTimeout } from '@/utils'
 import type { ArticleFilter, PaginationOptions } from '@/types'
 
 export interface NyTimesMultimediaItem {
@@ -47,13 +47,13 @@ export interface NyTimesResponse {
 }
 
 /**
- * Fetch articles from The New York Times Article Search API.
+ * Fetch articles from The New York Times Article Search API via the local proxy server.
  */
 export const fetchNyTimesArticles = async (
   filter: ArticleFilter,
   pagination: PaginationOptions
 ): Promise<NyTimesResponse> => {
-  if (getUseMockData() || !API_KEYS.nytimes) {
+  if (getUseMockData()) {
     const result = await fetchMockArticles(
       filter,
       pagination.page,
@@ -89,7 +89,6 @@ export const fetchNyTimesArticles = async (
   const params = new URLSearchParams({
     q: filter.keyword || 'news',
     page: String(pagination.page - 1),
-    'api-key': API_KEYS.nytimes,
     sort: 'newest',
   })
 
@@ -97,11 +96,11 @@ export const fetchNyTimesArticles = async (
     params.set('begin_date', filter.fromDate.replace(/-/g, ''))
   if (filter.toDate) params.set('end_date', filter.toDate.replace(/-/g, ''))
   if (filter.category) {
-    params.set('fq', `news_desk:("${filter.category}")`)
+    params.set('fq', `news_desk:("${capitalize(filter.category)}")`)
   }
 
   const response = await fetchWithTimeout(
-    `${API_ENDPOINTS.nytimes}?${params.toString()}`
+    `${API_BASE_URL}/nytimes?${params.toString()}`
   )
   return response.json() as Promise<NyTimesResponse>
 }

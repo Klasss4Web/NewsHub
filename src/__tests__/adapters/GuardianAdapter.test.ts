@@ -57,4 +57,29 @@ describe('GuardianAdapter', () => {
       author: 'Jane Smith',
     })
   })
+
+  it('returns an empty array when results is not an array', async () => {
+    vi.spyOn(client, 'fetchGuardianArticles').mockResolvedValue({
+      response: {
+        status: 'ok',
+        total: 0,
+        pages: 0,
+        currentPage: 1,
+        results: null,
+      },
+    } as unknown as GuardianResponse)
+
+    const result = await adapter.fetch(
+      {
+        keyword: 'test',
+        fromDate: null,
+        toDate: null,
+        category: null,
+        sources: [],
+      },
+      { page: 1, pageSize: 10 }
+    )
+
+    expect(result.articles).toEqual([])
+  })
 })

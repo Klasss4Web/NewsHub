@@ -13,11 +13,13 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       <label
         htmlFor={checkboxId}
         className={[
-          'group relative flex cursor-pointer items-start gap-3 rounded-lg border border-gray-200 bg-white p-3 transition-all duration-200 ease-spring',
-          'hover:border-primary-300 hover:shadow-sm',
+          'group relative flex items-start gap-3 rounded-lg border border-gray-200 bg-white p-3 transition-all duration-200 ease-spring',
+          props.disabled
+            ? 'cursor-not-allowed opacity-60'
+            : 'cursor-pointer hover:border-primary-300 hover:shadow-sm',
           'has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-primary-500 has-[:focus-visible]:ring-offset-2',
           'dark:border-gray-700 dark:bg-gray-800 dark:hover:border-primary-500/50 dark:has-[:focus-visible]:ring-offset-gray-900',
-          props.checked || props.defaultChecked
+          (props.checked || props.defaultChecked) && !props.disabled
             ? 'border-primary-500 bg-primary-50/60 dark:border-primary-500 dark:bg-primary-900/20'
             : '',
           className,
